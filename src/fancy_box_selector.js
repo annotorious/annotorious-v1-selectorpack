@@ -49,18 +49,32 @@ FancyBoxSelector.prototype._attachListeners = function() {
 
       self._g2d.clearRect(0, 0, self._canvas.width, self._canvas.height);
       
-      var width = self._opposite.x - self._anchor.x;
-      var height = self._opposite.y - self._anchor.y;
+      var top, left, bottom, right;
+      if (self._opposite.y > self._anchor.y) {
+        top = self._anchor.y;
+        bottom = self._opposite.y;
+      } else {
+        top = self._opposite.y;    
+        bottom = self._anchor.y;
+      }
       
-      // TODO make this work in all quadrants
-      // TODO make use of width/height vars!
+      if (self._opposite.x > self._anchor.x) {
+        right = self._opposite.x;
+        left = self._anchor.x;
+      } else {
+        right = self._anchor.x;   
+        left = self._opposite.x;     
+      }
+      
+      var width = right - left;
+      var height = bottom - top;
       self._g2d.strokeStyle = '#000000';
-      self._g2d.fillStyle = 'rgba(0,0,0,0.4)';
-      self._g2d.fillRect(0, 0, self._canvas.width, self._anchor.y);
-      self._g2d.fillRect(self._opposite.x, self._anchor.y, (self._canvas.width - self._opposite.x), (self._opposite.y - self._anchor.y));
-      self._g2d.fillRect(0, self._opposite.y, self._canvas.width, (self._canvas.height - self._opposite.y));
-      self._g2d.fillRect(0, self._anchor.y, self._anchor.x, (self._opposite.y - self._anchor.y));
-      self._g2d.strokeRect(self._anchor.x + 0.5, self._anchor.y + 0.5, width, height);
+      self._g2d.fillStyle = 'rgba(0,0,0,0.35)';
+      self._g2d.fillRect(0, 0, self._canvas.width, top);
+      self._g2d.fillRect(right, top, (self._canvas.width - right), height);
+      self._g2d.fillRect(0, bottom, self._canvas.width, (self._canvas.height - bottom));
+      self._g2d.fillRect(0, top, left, height);
+      self._g2d.strokeRect(left + 0.5, top + 0.5, width, height);
     }
   });
 
