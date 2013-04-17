@@ -52,19 +52,15 @@ FancyBoxSelector.prototype._attachListeners = function() {
       var width = self._opposite.x - self._anchor.x;
       var height = self._opposite.y - self._anchor.y;
       
+      // TODO make this work in all quadrants
+      // TODO make use of width/height vars!
       self._g2d.strokeStyle = '#000000';
+      self._g2d.fillStyle = 'rgba(0,0,0,0.4)';
+      self._g2d.fillRect(0, 0, self._canvas.width, self._anchor.y);
+      self._g2d.fillRect(self._opposite.x, self._anchor.y, (self._canvas.width - self._opposite.x), (self._opposite.y - self._anchor.y));
+      self._g2d.fillRect(0, self._opposite.y, self._canvas.width, (self._canvas.height - self._opposite.y));
+      self._g2d.fillRect(0, self._anchor.y, self._anchor.x, (self._opposite.y - self._anchor.y));
       self._g2d.strokeRect(self._anchor.x + 0.5, self._anchor.y + 0.5, width, height);
-      self._g2d.strokeStyle = '#ff0000';
-
-      if (width > 0 && height > 0) {
-        self._g2d.strokeRect(self._anchor.x + 1.5, self._anchor.y + 1.5, width - 2, height - 2);
-      } else if (width > 0 && height < 0) {
-        self._g2d.strokeRect(self._anchor.x + 1.5, self._anchor.y - 0.5, width - 2, height + 2);
-      } else if (width < 0 && height < 0) {
-        self._g2d.strokeRect(self._anchor.x - 0.5, self._anchor.y - 0.5, width + 2, height + 2);
-      } else {
-        self._g2d.strokeRect(self._anchor.x - 0.5, self._anchor.y + 1.5, width + 2, height - 2);
-      }
     }
   });
 
@@ -127,6 +123,7 @@ FancyBoxSelector.prototype.startSelection = function(x, y) {
   this._annotator.fireEvent('onSelectionStarted', { offsetX: x, offsetY: y });
   
   // goog.style.setStyle(document.body, '-webkit-user-select', 'none');
+  document.body.style.webkitUserSelect = 'none';
 }
 
 /**
@@ -136,6 +133,7 @@ FancyBoxSelector.prototype.stopSelection = function() {
   this._detachListeners();
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
   // goog.style.setStyle(document.body, '-webkit-user-select', 'auto');
+  document.body.style.webkitUserSelect = 'auto';
   delete this._opposite;
 }
 
