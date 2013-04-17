@@ -69,7 +69,7 @@ FancyBoxSelector.prototype._attachListeners = function() {
       var width = right - left;
       var height = bottom - top;
       self._g2d.strokeStyle = '#000000';
-      self._g2d.fillStyle = 'rgba(0,0,0,0.35)';
+      self._g2d.fillStyle = 'rgba(0,0,0,0.45)';
       self._g2d.fillRect(0, 0, self._canvas.width, top);
       self._g2d.fillRect(right, top, (self._canvas.width - right), height);
       self._g2d.fillRect(0, bottom, self._canvas.width, (self._canvas.height - bottom));
