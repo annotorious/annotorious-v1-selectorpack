@@ -246,8 +246,7 @@ PolygonSelector.prototype.drawShape = function(g2d, shape, highlight) {
   g2d.lineWidth = 1.3;
   g2d.strokeStyle = '#000000';
  
-  /*
-  var outline = annotorious.shape.expand(shape, 1.2).geometry.points;
+  var outline = annotorious.geometry.expand(shape, 1.2).geometry.points;
   g2d.beginPath();
   g2d.moveTo(outline[0].x, outline[0].y);
   for (var i=1; i<outline.length; i++) {
@@ -255,7 +254,6 @@ PolygonSelector.prototype.drawShape = function(g2d, shape, highlight) {
   }
   g2d.lineTo(outline[0].x, outline[0].y);
   g2d.stroke();
-  */
 
   // Inner line
   g2d.lineWidth = 1.2;
