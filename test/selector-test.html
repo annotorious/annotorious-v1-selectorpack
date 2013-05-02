@@ -4,11 +4,14 @@
     <link rel="stylesheet" href="http://annotorious.github.io/latest/themes/dark/annotorious-dark.css" type="text/css" />
     <script src="http://annotorious.github.io/latest/annotorious.min.js"></script>
     <script src="../src/fancy_box_selector.js"></script>
+    <script src="../src/polygon_selector.js"></script>
     <script>
       window.onload = function() {
         var item_src = document.getElementById('hallstatt').src;
         anno.addSelector(item_src, new FancyBoxSelector());
-        anno.setActiveSelector(item_src, 'fancybox');
+        anno.addSelector(item_src, new PolygonSelector());
+        // anno.setActiveSelector(item_src, 'fancybox');
+        anno.setActiveSelector(item_src, 'polygon');
       }
     </script>
   </head>
