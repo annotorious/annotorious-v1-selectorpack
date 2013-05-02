@@ -45,7 +45,9 @@ FancyBoxSelector.prototype._attachListeners = function() {
   var self = this;  
   this._mouseMoveListener = this._canvas.addEventListener('mousemove', function(event) {
     if (self._enabled) {
-      self._opposite = { x: event.offsetX, y: event.offsetY };
+      self._opposite = (event.offsetX == undefined) ? 
+        { x: event.layerX, y: event.layerY } : 
+        { x: event.offsetX, y: event.offsetY };
 
       self._g2d.clearRect(0, 0, self._canvas.width, self._canvas.height);
       
