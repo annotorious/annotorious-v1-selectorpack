@@ -1,16 +1,35 @@
 /**
+ * Plugin wrapper.
+ * @param {Object} config_opts configuration options
+ * @constructor
+ */
+annotorious.plugin.FancyBoxSelector = function(config_opts) { 
+  if (config_opts)
+    this._activate = config_opts.activate;
+}
+
+/**
+ * Attach a new selector onInitAnnotator.
+ */
+annotorious.plugin.FancyBoxSelector.prototype.onInitAnnotator = function(annotator) {
+  annotator.addSelector(new annotorious.plugin.FancyBoxSelector.Selector());
+  if (this._activate)
+    annotator.setCurrentSelector('fancybox');
+}
+
+/**
  * A fancier version of the default box selection tool which 'masks out' the rest of the image
  * while the box is being dragged.
  * @constructor
  */
-FancyBoxSelector = function() { }
+annotorious.plugin.FancyBoxSelector.Selector = function() { }
 
 /**
  * Initializes the selector.
  * @param {element} canvas the canvas to draw on
  * @param {object} annotator reference to the annotator
  */
-FancyBoxSelector.prototype.init = function(annotator, canvas) {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.init = function(annotator, canvas) {
   /** @private **/
   this._canvas = canvas;
   
@@ -41,7 +60,7 @@ FancyBoxSelector.prototype.init = function(annotator, canvas) {
  * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.
  * @private
  */
-FancyBoxSelector.prototype._attachListeners = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype._attachListeners = function() {
   var self = this;  
   this._mouseMoveListener = this._canvas.addEventListener('mousemove', function(event) {
     if (self._enabled) {
@@ -96,7 +115,7 @@ FancyBoxSelector.prototype._attachListeners = function() {
  * Detaches MOUSEUP and MOUSEMOVE listeners from the editing canvas.
  * @private
  */
-FancyBoxSelector.prototype._detachListeners = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype._detachListeners = function() {
   if (this._mouseMoveListener) {
     // goog.events.unlistenByKey(this._mouseMoveListener);
     delete this._mouseMoveListener;
@@ -112,7 +131,7 @@ FancyBoxSelector.prototype._detachListeners = function() {
  * Selector API method: returns the selector name.
  * @returns the selector name
  */
-FancyBoxSelector.prototype.getName = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.getName = function() {
   return 'fancybox';
 }
 
@@ -123,7 +142,7 @@ FancyBoxSelector.prototype.getName = function() {
  *
  * @return the supported shape type
  */
-FancyBoxSelector.prototype.getSupportedShapeType = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.getSupportedShapeType = function() {
   return 'rect';
 }
 
@@ -132,7 +151,7 @@ FancyBoxSelector.prototype.getSupportedShapeType = function() {
  * @param {number} x the X coordinate
  * @param {number} y the Y coordinate
  */
-FancyBoxSelector.prototype.startSelection = function(x, y) {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.startSelection = function(x, y) {
   this._enabled = true;
   this._attachListeners();
   this._anchor = { x: x, y: y };
@@ -145,7 +164,7 @@ FancyBoxSelector.prototype.startSelection = function(x, y) {
 /**
  * Selector API method: stops the selection.
  */
-FancyBoxSelector.prototype.stopSelection = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.stopSelection = function() {
   this._detachListeners();
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
   // goog.style.setStyle(document.body, '-webkit-user-select', 'auto');
@@ -157,7 +176,7 @@ FancyBoxSelector.prototype.stopSelection = function() {
  * Selector API method: returns the currently edited shape.
  * @returns {annotorious.shape.Shape} the shape
  */
-FancyBoxSelector.prototype.getShape = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.getShape = function() {
   if (this._opposite && 
      (Math.abs(this._opposite.x - this._anchor.x) > 3) && 
      (Math.abs(this._opposite.y - this._anchor.y) > 3)) {
@@ -186,7 +205,7 @@ FancyBoxSelector.prototype.getShape = function() {
  * Selector API method: returns the bounds of the selected shape, in viewport (= pixel) coordinates.
  * @returns {object} the shape viewport bounds
  */
-FancyBoxSelector.prototype.getViewportBounds = function() {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.getViewportBounds = function() {
   var right, left;
   if (this._opposite.x > this._anchor.x) {
     right = this._opposite.x;
@@ -211,7 +230,7 @@ FancyBoxSelector.prototype.getViewportBounds = function() {
 /**
  * TODO not sure if this is really the best way/architecture to handle viewer shape drawing 
  */
-FancyBoxSelector.prototype.drawShape = function(g2d, shape, highlight) {
+annotorious.plugin.FancyBoxSelector.Selector.prototype.drawShape = function(g2d, shape, highlight) {
   if (shape.type == 'rect') {
     var color, lineWidth;
     if (highlight) {

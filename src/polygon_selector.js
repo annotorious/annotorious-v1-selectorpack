@@ -1,10 +1,29 @@
 /**
+ * Plugin wrapper.
+ * @param {Object} config_opts configuration options
+ * @constructor
+ */
+annotorious.plugin.PolygonSelector = function(config_opts) { 
+  if (config_opts)
+    this._activate = config_opts.activate;
+}
+
+/**
+ * Attach a new selector onInitAnnotator.
+ */
+annotorious.plugin.PolygonSelector.prototype.onInitAnnotator = function(annotator) {
+  annotator.addSelector(new annotorious.plugin.PolygonSelector.Selector());
+  if (this._activate)
+    annotator.setCurrentSelector('polygon');
+}
+
+/**
  * A polygon selector.
  * @constructor
  */
-PolygonSelector = function() { }
+annotorious.plugin.PolygonSelector.Selector = function() { }
 
-PolygonSelector.prototype.init = function(annotator, canvas) {
+annotorious.plugin.PolygonSelector.Selector.prototype.init = function(annotator, canvas) {
   /** @private **/
   this._annotator = annotator;
 
@@ -37,7 +56,7 @@ PolygonSelector.prototype.init = function(annotator, canvas) {
  * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.
  * @private
  */
-PolygonSelector.prototype._attachListeners = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = function() {
   var self = this;  
 
   var refresh = function(last, highlight_last) {
@@ -137,7 +156,7 @@ PolygonSelector.prototype._attachListeners = function() {
  * Detaches MOUSEUP and MOUSEMOVE listeners from the editing canvas.
  * @private
  */
-PolygonSelector.prototype._detachListeners = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype._detachListeners = function() {
   if (this._mouseMoveListener) {
     // goog.events.unlistenByKey(this._mouseMoveListener);
     delete this._mouseMoveListener;
@@ -153,7 +172,7 @@ PolygonSelector.prototype._detachListeners = function() {
  * Selector API method: returns the selector name.
  * @returns the selector name
  */
-PolygonSelector.prototype.getName = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype.getName = function() {
   return 'polygon';
 }
 
@@ -164,7 +183,7 @@ PolygonSelector.prototype.getName = function() {
  *
  * @return the supported shape type
  */
-PolygonSelector.prototype.getSupportedShapeType = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype.getSupportedShapeType = function() {
   return 'polygon';
 }
 
@@ -173,7 +192,7 @@ PolygonSelector.prototype.getSupportedShapeType = function() {
  * @param {number} x the X coordinate
  * @param {number} y the Y coordinate
  */
-PolygonSelector.prototype.startSelection = function(x, y) {
+annotorious.plugin.PolygonSelector.Selector.prototype.startSelection = function(x, y) {
   this._enabled = true;
   this._attachListeners();
   this._anchor = { x: x, y: y };
@@ -185,7 +204,7 @@ PolygonSelector.prototype.startSelection = function(x, y) {
 /**
  * Selector API method: stops the selection.
  */
-PolygonSelector.prototype.stopSelection = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype.stopSelection = function() {
   this._detachListeners();
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
   // goog.style.setStyle(document.body, '-webkit-user-select', 'auto');
@@ -196,7 +215,7 @@ PolygonSelector.prototype.stopSelection = function() {
  * Selector API method: returns the currently edited shape.
  * @returns {annotorious.shape.Shape} the shape
  */
-PolygonSelector.prototype.getShape = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype.getShape = function() {
   var points = [];
   points.push(this._annotator.toItemCoordinates(this._anchor));
   
@@ -213,7 +232,7 @@ PolygonSelector.prototype.getShape = function() {
  * Selector API method: returns the bounds of the selected shape, in viewport (= pixel) coordinates.
  * @returns {object} the shape viewport bounds
  */
-PolygonSelector.prototype.getViewportBounds = function() {
+annotorious.plugin.PolygonSelector.Selector.prototype.getViewportBounds = function() {
   var right = this._anchor.x;
   var left = this._anchor.x;
   var top = this._anchor.y;
@@ -242,7 +261,7 @@ PolygonSelector.prototype.getViewportBounds = function() {
 /**
  * TODO not sure if this is really the best way/architecture to handle viewer shape drawing 
  */
-PolygonSelector.prototype.drawShape = function(g2d, shape, highlight) {
+annotorious.plugin.PolygonSelector.Selector.prototype.drawShape = function(g2d, shape, highlight) {
   var color;
   if (highlight) {
     color = '#fff000';
