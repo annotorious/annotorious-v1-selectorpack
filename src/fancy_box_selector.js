@@ -116,15 +116,11 @@ annotorious.plugin.FancyBoxSelector.Selector.prototype._attachListeners = functi
  * @private
  */
 annotorious.plugin.FancyBoxSelector.Selector.prototype._detachListeners = function() {
-  if (this._mouseMoveListener) {
-    // goog.events.unlistenByKey(this._mouseMoveListener);
+  if (this._mouseMoveListener)
     delete this._mouseMoveListener;
-  }
 
-  if (this._mouseUpListener) {
-    // goog.events.unlistenByKey(this._mouseUpListener);
+  if (this._mouseUpListener)
     delete this._UpListener;
-  }
 }
 
 /**
@@ -137,9 +133,6 @@ annotorious.plugin.FancyBoxSelector.Selector.prototype.getName = function() {
 
 /**
  * Selector API method: returns the supported shape type.
- *
- * TODO support for multiple shape types?
- *
  * @return the supported shape type
  */
 annotorious.plugin.FancyBoxSelector.Selector.prototype.getSupportedShapeType = function() {
@@ -156,8 +149,6 @@ annotorious.plugin.FancyBoxSelector.Selector.prototype.startSelection = function
   this._attachListeners();
   this._anchor = { x: x, y: y };
   this._annotator.fireEvent('onSelectionStarted', { offsetX: x, offsetY: y });
-  
-  // goog.style.setStyle(document.body, '-webkit-user-select', 'none');
   document.body.style.webkitUserSelect = 'none';
 }
 
@@ -167,7 +158,6 @@ annotorious.plugin.FancyBoxSelector.Selector.prototype.startSelection = function
 annotorious.plugin.FancyBoxSelector.Selector.prototype.stopSelection = function() {
   this._detachListeners();
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
-  // goog.style.setStyle(document.body, '-webkit-user-select', 'auto');
   document.body.style.webkitUserSelect = 'auto';
   delete this._opposite;
 }
@@ -184,18 +174,8 @@ annotorious.plugin.FancyBoxSelector.Selector.prototype.getShape = function() {
     var viewportBounds = this.getViewportBounds();
     var item_anchor = this._annotator.toItemCoordinates({x: viewportBounds.left, y: viewportBounds.top});
     var item_opposite = this._annotator.toItemCoordinates({x: viewportBounds.right - 1, y: viewportBounds.bottom - 1});
- 
-    /*
-    var rect = new annotorious.shape.geom.Rectangle(
-      item_anchor.x,
-      item_anchor.y,
-      item_opposite.x - item_anchor.x,
-      item_opposite.y - item_anchor.y
-    );
-    */
 
     return { type: 'rect', geometry: { x: item_anchor.x, y: item_anchor.y, width: item_opposite.x - item_anchor.x, height: item_opposite.y - item_anchor.y } };
-    // return new annotorious.shape.Shape(annotorious.shape.ShapeType.RECTANGLE, rect);
   } else {
     return undefined;
   }
@@ -227,9 +207,6 @@ annotorious.plugin.FancyBoxSelector.Selector.prototype.getViewportBounds = funct
   return {top: top, right: right, bottom: bottom, left: left};
 }
 
-/**
- * TODO not sure if this is really the best way/architecture to handle viewer shape drawing 
- */
 annotorious.plugin.FancyBoxSelector.Selector.prototype.drawShape = function(g2d, shape, highlight) {
   if (shape.type == 'rect') {
     var color, lineWidth;
