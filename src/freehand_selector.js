@@ -42,31 +42,9 @@ annotorious.plugin.FreehandSelector.Selector.prototype.init = function(annotator
   
   /** @private **/
   this._enabled = false;
-
-  /*
-  paper.setup(canvas);
- 
-  var path = new paper.Path();
-  path.strokeColor = '#ffffff';
-
-  var moveListener = function(event) {
-    var to = new paper.Point(event.offsetX, event.offsetY);
-    path.lineTo(to);
-    paper.view.draw();
-  }
-
-  goog.events.listen(canvas, goog.events.EventType.MOUSEDOWN, function(event) {
-    goog.events.listen(canvas, goog.events.EventType.MOUSEMOVE, moveListener);
-    var start = new paper.Point(event.offsetX, event.offsetY);
-    path.moveTo(start);
-  });
-
-  goog.events.listen(canvas, goog.events.EventType.MOUSEUP, function(event) {
-    path = new paper.Path();
-    path.strokeColor = '#ffffff';
-    goog.events.unlisten(canvas, goog.events.EventType.MOUSEMOVE, moveListener);
-  });
-  */
+  
+  /** @private **/
+  this._coords = [];
 }
 
 /**
@@ -81,6 +59,8 @@ annotorious.plugin.FreehandSelector.Selector.prototype._attachListeners = functi
         { x: event.layerX, y: event.layerY } : 
         { x: event.offsetX, y: event.offsetY };
         
+      self._coords.push(pos);
+      
       self._g2d.lineTo(pos.x, pos.y);
       self._g2d.stroke();
     }
@@ -119,7 +99,7 @@ annotorious.plugin.FreehandSelector.Selector.prototype.getName = function() {
  * @return the supported shape type
  */
 annotorious.plugin.FreehandSelector.Selector.prototype.getSupportedShapeType = function() {
-  return 'freehand';
+  return 'linestring';
 }
 
 /**
@@ -129,6 +109,7 @@ annotorious.plugin.FreehandSelector.Selector.prototype.getSupportedShapeType = f
  */
 annotorious.plugin.FreehandSelector.Selector.prototype.startSelection = function(x, y) {
   this._enabled = true;
+  this._coords = [];
   this._attachListeners();
   this._anchor = { x: x, y: y };
   this._annotator.fireEvent('onSelectionStarted', { offsetX: x, offsetY: y });
@@ -140,7 +121,10 @@ annotorious.plugin.FreehandSelector.Selector.prototype.startSelection = function
  * @returns {annotorious.shape.Shape} the shape
  */
 annotorious.plugin.FreehandSelector.Selector.prototype.getShape = function() {
-  // TODO implement
+  // TODO dirty hack - fix me!
+  var shape = { type: 'polygon', geometry: { points: this._coords } };  
+  // var bbox = annotorious.geometry.getBoundingRect(shape);
+  return shape;
 }
 
 /**
@@ -148,7 +132,10 @@ annotorious.plugin.FreehandSelector.Selector.prototype.getShape = function() {
  * @returns {object} the shape viewport bounds
  */
 annotorious.plugin.FreehandSelector.Selector.prototype.getViewportBounds = function() {
-  // TODO implement
+  // TODO dirty hack - fix me!
+  var viewportShape = { type: 'polygon', geometry: { points: this._coords } };  
+  var bbox = annotorious.geometry.getBoundingRect(viewportShape);
+  return { top: bbox.geometry.y, right: bbox.geometry.x, bottom: bbox.geometry.y + bbox.geometry.height, left: bbox.geometry.x + bbox.geometry.width };
 }
 
 
