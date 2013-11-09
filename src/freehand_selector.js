@@ -139,7 +139,11 @@ annotorious.plugin.FreehandSelector.Selector.prototype.getViewportBounds = funct
 }
 
 annotorious.plugin.FreehandSelector.Selector.prototype.stopSelection = function() {
-  // TODO implement
+  // TODO duplication - needs common base class
+  this._detachListeners();
+  this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
+  console.log('foo');
+  document.body.style.webkitUserSelect = 'auto';
 }
 
 
