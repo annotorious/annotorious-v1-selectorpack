@@ -135,7 +135,11 @@ annotorious.plugin.FreehandSelector.Selector.prototype.getViewportBounds = funct
   // TODO dirty hack - fix me!
   var viewportShape = { type: 'polygon', geometry: { points: this._coords } };  
   var bbox = annotorious.geometry.getBoundingRect(viewportShape);
-  return { top: bbox.geometry.y, right: bbox.geometry.x, bottom: bbox.geometry.y + bbox.geometry.height, left: bbox.geometry.x + bbox.geometry.width };
+  return { top: bbox.geometry.y, left: bbox.geometry.x, bottom: bbox.geometry.y + bbox.geometry.height, right: bbox.geometry.x + bbox.geometry.width };
+}
+
+annotorious.plugin.FreehandSelector.Selector.prototype.stopSelection = function() {
+  // TODO implement
 }
 
 
