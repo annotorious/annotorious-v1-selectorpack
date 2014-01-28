@@ -35,6 +35,9 @@ annotorious.plugin.PolygonSelector.Selector.prototype.init = function(annotator,
 
   /** @private **/
   this._anchor;
+
+  /** @private **/
+  this._last;
   
   /** @private **/
   this._points = [];
@@ -140,15 +143,22 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
       event.offsetY = event.layerY;
     }
 
-    if (isClosable(event.offsetX, event.offsetY)) {
-      self._enabled = false;
-      refresh(self._anchor);
+    if (!this._last) this._last = { x: event.offsetX, y: event.offsetY };
 
-      self._annotator.fireEvent('onSelectionCompleted',
-        { mouseEvent: event, shape: self.getShape(), viewportBounds: self.getViewportBounds() }); 
-    } else {
-      self._points.push({ x: event.offsetX, y: event.offsetY });
+    if (!(this._last.x == event.offsetX && this._last.y == event.offsetY)) {
+      console.log(isClosable(event.offsetX, event.offsetY));
+      if (isClosable(event.offsetX, event.offsetY)) {
+        self._enabled = false;
+        refresh(self._anchor);
+
+        self._annotator.fireEvent('onSelectionCompleted',
+          { mouseEvent: event, shape: self.getShape(), viewportBounds: self.getViewportBounds() }); 
+      } else {
+        self._points.push({ x: event.offsetX, y: event.offsetY });
+      }
     }
+    this._last = { x: event.offsetX, y: event.offsetY };
+
   });
 }
 
