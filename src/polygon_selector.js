@@ -120,8 +120,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
     return (self._points.length > 1 && Math.abs(x - self._anchor.x) < 5 && Math.abs(y - self._anchor.y) < 5);
   };
 
-  // this._mouseMoveListener = goog.events.listen(this._canvas, goog.events.EventType.MOUSEMOVE, function(event) {
-  this._mouseMoveListener = this._canvas.addEventListener('mousemove', function(event) {
+  this._mouseMoveListener = function(event) {
     if (self._enabled) {
       if (event.offsetX == undefined) {
         event.offsetX = event.layerX;
@@ -131,10 +130,11 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
       self._mouse = { x: event.offsetX, y: event.offsetY };
       refresh(self._mouse, isClosable(event.offsetX, event.offsetY));
     }
-  });
+  };
 
-  // this._mouseUpListener = goog.events.listen(this._canvas, goog.events.EventType.MOUSEUP, function(event) {
-  this._mouseUpListener = this._canvas.addEventListener('mouseup', function(event) {
+  this._canvas.addEventListener('mousemove', this._mouseMoveListener);
+
+  this._mouseUpListener = function(event) {
     if (event.offsetX == undefined) {
       event.offsetX = event.layerX;
       event.offsetY = event.layerY;
@@ -143,13 +143,14 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
     if (isClosable(event.offsetX, event.offsetY)) {
       self._enabled = false;
       refresh(self._anchor);
-
       self._annotator.fireEvent('onSelectionCompleted',
         { mouseEvent: event, shape: self.getShape(), viewportBounds: self.getViewportBounds() }); 
     } else {
       self._points.push({ x: event.offsetX, y: event.offsetY });
     }
-  });
+  };
+
+  this._canvas.addEventListener('mouseup', this._mouseUpListener);
 }
 
 /**
@@ -157,14 +158,13 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
  * @private
  */
 annotorious.plugin.PolygonSelector.Selector.prototype._detachListeners = function() {
+  var self = this;
   if (this._mouseMoveListener) {
-    // goog.events.unlistenByKey(this._mouseMoveListener);
-    delete this._mouseMoveListener;
+    this._canvas.removeEventListener(self._mouseMoveListener);
   }
 
   if (this._mouseUpListener) {
-    // goog.events.unlistenByKey(this._mouseUpListener);
-    delete this._mouseUpListener;
+    this._canvas.removeEventListener(self._mouseUpListener);
   }
 }
 
@@ -205,10 +205,10 @@ annotorious.plugin.PolygonSelector.Selector.prototype.startSelection = function(
  * Selector API method: stops the selection.
  */
 annotorious.plugin.PolygonSelector.Selector.prototype.stopSelection = function() {
+  this._points = [];
   this._detachListeners();
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
   // goog.style.setStyle(document.body, '-webkit-user-select', 'auto');
-  this._points = [];
 }
 
 /**
