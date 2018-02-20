@@ -345,10 +345,12 @@ annotorious.plugin.DirectedRectSelector.Selector.prototype.drawShape = function(
 
   // TODO check if it's really a polyogn
   
+  var rectpoints = annotorious.geometry.expand(shape, 1.2).geometry.points;
   // Outer line
   g2d.lineWidth = 1.3;
   g2d.strokeStyle = '#000000';
- 
-  var rectpoints = annotorious.geometry.expand(shape, 1.2).geometry.points;
+  drawFromRectPoints(g2d, rectpoints);
+  g2d.lineWidth = 1.2;
+  g2d.strokeStyle = color;
   drawFromRectPoints(g2d, rectpoints);
 }
