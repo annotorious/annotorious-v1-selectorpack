@@ -160,11 +160,11 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
 annotorious.plugin.PolygonSelector.Selector.prototype._detachListeners = function() {
   var self = this;
   if (this._mouseMoveListener) {
-    this._canvas.removeEventListener(self._mouseMoveListener);
+     this._canvas.removeEventListener("mousemove", self._mouseMoveListener);
   }
 
   if (this._mouseUpListener) {
-    this._canvas.removeEventListener(self._mouseUpListener);
+     this._canvas.removeEventListener("mouseup", self._mouseUpListener);
   }
 }
 
@@ -186,6 +186,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype.getName = function() {
 annotorious.plugin.PolygonSelector.Selector.prototype.getSupportedShapeType = function() {
   return 'polygon';
 }
+
 
 /**
  * Selector API method: starts the selection at the specified coordinates.
